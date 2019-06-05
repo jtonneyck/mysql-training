@@ -1,30 +1,56 @@
 const express = require("express")
 const app = express()
 const mysql = require("mysql")
- 
+const bodyParser = require('body-parser')
+const dbConfig = require("./config/db")
+app.use(bodyParser.json())
 app.set("port", 3000)
 app.set('view engine', 'ejs');
 app.use(express.static('public'))
 
-var connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'tech-savvy',
-    password : 'tech-savvy12345',
+const databases = {
+  sakila : mysql.createConnection({
+    host     : dbConfig.host,
+    user     : dbConfig.user,
+    password : dbConfig.password,
     database : 'sakila'
-  });
-  
-  connection.connect(function(err) {
+  }),
+  northwind : mysql.createConnection({
+    host     : dbConfig.host,
+    user     : dbConfig.user,
+    password : dbConfig.password,
+    database : 'northwind'
+  }),
+  chinook : mysql.createConnection({
+    host     : dbConfig.host,
+    user     : dbConfig.user,
+    password : dbConfig.password,
+    database : 'Chinook'
+  })
+}
+
+  databases.sakila.connect(function(err) {
     if (err) throw err;
-    console.log('connected as id ' + connection.threadId);
+    console.log('connected as id ' + databases.sakila.threadId);
+  });
+  databases.northwind.connect(function(err) {
+    if (err) throw err;
+    console.log('connected as id ' + databases.northwind.threadId);
+  });
+  databases.chinook.connect(function(err) {
+    if (err) throw err;
+    console.log('connected as id ' + databases.chinook.threadId);
   });
 
-app.get("/query", (req, res)=> {
-    connection.query("SELECT * FROM Customer", function (error, results, fields) { 
+app.post("/query", (req, res)=> {
+
+    const db = databases[req.body.db]
+    
+    db.query(req.body.query, function (error, results, fields) { 
         if(error) {
             res.status(422).json(error)
         } else {
             console.log('The solution is: ', results);
-            debugger
             let header = Object.keys(results[0])
             res.status(200).json({results, header, error})
         }
@@ -35,4 +61,3 @@ app.listen(app.get("port"), ()=> {
     console.log("App is listening on port", app.get("port"))
 } )
 
-//process.on('exit', exitHandler.bind(null,{cleanup:true}));
