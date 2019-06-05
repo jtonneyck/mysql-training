@@ -3,8 +3,10 @@ const app = express()
 const mysql = require("mysql")
 const bodyParser = require('body-parser')
 const dbConfig = require("./config/db")
+require('dotenv').config()
+
 app.use(bodyParser.json())
-app.set("port", 3000)
+app.set("port", process.env.PORT)
 app.set('view engine', 'ejs');
 app.use(express.static('public'))
 
