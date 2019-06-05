@@ -96,14 +96,16 @@ class Query extends React.Component {
         : ""  
         }
         {header? 
-          <table>
-            <thead>
-              {header}
-            </thead>
-            <tbody>
-              {results}
-            </tbody>
-          </table>
+          <div className="table-container">
+            <table>
+              <thead>
+                {header}
+              </thead>
+              <tbody>
+                {results}
+              </tbody>
+            </table>
+          </div>
           :""
         }
       </div>
