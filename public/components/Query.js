@@ -33,7 +33,7 @@ class Query extends React.Component {
       })
     })
     .catch((err)=> {
-      this.setState({error: err.response.data.sqlMessage})
+      this.setState({error: err.response.data.sqlMessage, results: []})
     })
   }
   handleDbChange(e){
